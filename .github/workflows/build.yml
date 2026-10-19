@@ -1,0 +1,26 @@
+name: Build WHILL APKs
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew || true
+      - name: Build APKs via Gradle
+        run: ./gradlew assembleDebug --no-daemon
+      - name: Upload Mobile APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: mobile-apk
+          path: mobile/build/outputs/apk/debug/mobile-debug.apk
+      - name: Upload Wear APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: wear-apk
+          path: wear/build/outputs/apk/debug/wear-debug.apk
